@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:talkathon/features/authsystem/presentation/widget/SignupPage.dart';
 import 'package:talkathon/features/authsystem/presentation/widget/loginPage.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: const SignUpPage(),
     );
   }
 }
