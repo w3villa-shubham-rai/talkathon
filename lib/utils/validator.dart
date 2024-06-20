@@ -37,4 +37,11 @@ class ValidatorOfForm {
     return null;
   }
 
+  String? checkNotEmpty(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter any Text';
+    }
+    return null;
+  }
+
 }

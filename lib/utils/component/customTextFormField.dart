@@ -31,7 +31,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? requiredText;
   final Color ? requiredColors;
   final TextInputType? keyboardType;
-  final List<TextInputFormatter>? inputFormatters;
+  // final List<TextInputFormatter>? inputFormatters;
   final int? maxLength;
   final Widget? labelRowWidget;
   final TextStyle? labelStyle;
@@ -39,6 +39,7 @@ class CustomTextFormField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final BoxConstraints? prefixIconConstraints;
   final FocusNode? focusNode;
+  final Color? borderColor;
 
   const CustomTextFormField({super.key,
     this.hintText,
@@ -68,14 +69,15 @@ class CustomTextFormField extends StatelessWidget {
     this.requiredColors,
     this.keyboardType = TextInputType.text,
     this.maxLength,
-    this.labelRowWidget =  const SizedBox.shrink(),
+    this.labelRowWidget = const SizedBox.shrink(),
     this.onChanged,
-    this.inputFormatters,
+    // this.inputFormatters,
     this.labelStyle,
     this.labelMargin,
     this.contentPadding,
     this.prefixIconConstraints,
-    this.focusNode
+    this.focusNode,
+    this.borderColor,
   });
 
   final BorderRadius borderRadiusAll = const BorderRadius.all(Radius.circular(18));
@@ -83,7 +85,7 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -93,13 +95,21 @@ class CustomTextFormField extends StatelessWidget {
             label != null ? Row(
               children: [
                 Container(
-                    margin: labelMargin ?? const EdgeInsets.only(left: 16,bottom: 0),
-                    child: Text("$label", style: labelStyle ??  const TextStyle(color: AppColors.blackColor, fontSize: 12),)),
-                labelRowWidget != null ?  labelRowWidget!.marginOnly(left: 6) : const SizedBox.shrink()
+                  margin: labelMargin ?? const EdgeInsets.only(left: 16, bottom: 0),
+                  child: Text(
+                    "$label",
+                    style: labelStyle ?? const TextStyle(color: AppColors.blackColor, fontSize: 12),
+                  ),
+                ),
+                labelRowWidget != null ? labelRowWidget!.marginOnly(left: 6) : const SizedBox.shrink()
               ],
-            ): const SizedBox.shrink(),
-            required == true ? Text(requiredText ??"(Optional)",style: TextStyle(color: requiredColors == Colors.transparent ? AppColors.greyColor : requiredColors, fontSize: 11),).marginOnly(right: 10, bottom: 0) : const SizedBox.shrink(),
-          ],),
+            ) : const SizedBox.shrink(),
+            required == true ? Text(
+              requiredText ?? "(Optional)",
+              style: TextStyle(color: requiredColors == Colors.transparent ? AppColors.greyColor : requiredColors, fontSize: 11),
+            ).marginOnly(right: 10, bottom: 0) : const SizedBox.shrink(),
+          ],
+        ),
         SizedBox(
           height: height ?? 46,
           width: width,
@@ -113,52 +123,56 @@ class CustomTextFormField extends StatelessWidget {
             style: textStyle,
             maxLines: maxLines,
             showCursor: showCursor,
-            readOnly : readOnly!,
+            readOnly: readOnly!,
             obscureText: obscureText!,
             keyboardType: keyboardType,
-            inputFormatters : inputFormatters ?? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]"))],
+            // inputFormatters: inputFormatters ?? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]"))],
             decoration: InputDecoration(
-                isDense: true,
-                fillColor: fillColors ,
-                filled: true,
-                border: OutlineInputBorder(
-                  borderSide: borderSide ?? borderSideAll,
-                  borderRadius: borderRadius ?? borderRadiusAll,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: borderSide ?? borderSideAll,
-                  borderRadius: borderRadius ?? borderRadiusAll,
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: borderSide ?? borderSideAll,
-                  borderRadius: borderRadius ?? borderRadiusAll,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: borderSide ?? borderSideAll,
-                  borderRadius: borderRadius ?? borderRadiusAll,
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderSide: borderSide ?? borderSideAll,
-                  borderRadius: borderRadius ?? borderRadiusAll,
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: borderSide ?? borderSideAll,
-                  borderRadius: borderRadius ?? borderRadiusAll,
-                ),
-                prefixText: prefixText,
-                prefixStyle: const TextStyle(color: Colors.black, fontSize: 14),
-                hintText: hintText ?? "",
-                hintStyle: hintStyle ?? TextStyle(color: AppColors.blackColor, fontSize: 12),
-                suffixIcon: suffixIcon,
-                prefixIcon: prefixIcon,
-                prefix: prefix,
-                suffix: suffix,
-                contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: (46) / 2 - 12.0, horizontal: 16.0),
-                prefixIconConstraints: prefixIconConstraints ?? const BoxConstraints(minWidth: 14, maxHeight: 16, maxWidth: 16, minHeight: 14)
+              isDense: true,
+              fillColor: fillColors,
+              filled: true,
+
+              // border: OutlineInputBorder(
+              //   borderSide: BorderSide(color: borderColor ?? AppColors.cobaltBlue),
+              //
+              // ),
+              // enabledBorder: OutlineInputBorder(
+              //   borderSide: borderSide ?? borderSideAll,
+              //   borderRadius: borderRadius ?? borderRadiusAll,
+              // ),
+              // errorBorder: OutlineInputBorder(
+              //   borderSide: borderSide ?? borderSideAll,
+              //   borderRadius: borderRadius ?? borderRadiusAll,
+              // ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: AppColors.cobaltBlue), // Set focused border color to cobaltBlue
+                borderRadius: borderRadius ?? borderRadiusAll,
+              ),
+              enabledBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(color:AppColors.cobaltBlue), //<-- SEE HERE
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: borderSide ?? borderSideAll,
+                borderRadius: borderRadius ?? borderRadiusAll,
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: borderSide ?? borderSideAll,
+                borderRadius: borderRadius ?? borderRadiusAll,
+              ),
+
+              prefixText: prefixText,
+              prefixStyle: const TextStyle(color: Colors.black, fontSize: 14),
+              hintText: hintText ?? "",
+              hintStyle: hintStyle ?? const TextStyle(color: AppColors.lightGrey, fontSize: 12),
+              suffixIcon: suffixIcon,
+              prefixIcon: prefixIcon,
+              prefix: prefix,
+              suffix: suffix,
+              contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: (46) / 2 - 12.0, horizontal: 16.0),
+              prefixIconConstraints: prefixIconConstraints ?? const BoxConstraints(minWidth: 14, maxHeight: 16, maxWidth: 16, minHeight: 14),
             ),
-            onTap: (){
-              // suggestionsBox != null ? suggestionsBox!.close() : (){};
-              onTap != null ? onTap!.call() : (){};
+            onTap: () {
+              onTap != null ? onTap!.call() : () {};
             },
             onChanged: onChanged,
           ),
