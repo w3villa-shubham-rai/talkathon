@@ -5,11 +5,14 @@ class AuthSignUpIntialState extends AuthSignUpStateBloc {}
 class AuthSignUpLoadingState extends AuthSignUpStateBloc {}
 
 class AuthSignUpSucessState extends AuthSignUpStateBloc {
-  String data;
-  AuthSignUpSucessState(this.data);
+  final String? data;
+  final String? imagePath;
+  AuthSignUpSucessState({this.data,this.imagePath});
 }
 
 class AuthSignupErrorState extends AuthSignUpStateBloc {
-  final String errormessage;
-  AuthSignupErrorState({required this.errormessage});
+  final String errorMessage;
+  AuthSignupErrorState({required this.errorMessage});
 }
+
+

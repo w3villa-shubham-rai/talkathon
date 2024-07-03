@@ -1,7 +1,6 @@
 class AuthEvent{
 
 }
-
 class AuthSignUpEvent extends AuthEvent{
   final String uUid;
   final String firstName;
@@ -12,4 +11,14 @@ class AuthSignUpEvent extends AuthEvent{
   final String imgUrl;
   final String phoneNumber;
   AuthSignUpEvent({required this.uUid, required this.firstName,required this.lastName,required this.email,required this.password,required this.country,required this.imgUrl,required this.phoneNumber});
+}
+
+
+class ImagePickerEvent extends AuthEvent{
+}
+
+class AuthSignInEvent extends AuthEvent{
+  final String email;
+  final String password;
+  AuthSignInEvent({required this.email,required this.password});
 }

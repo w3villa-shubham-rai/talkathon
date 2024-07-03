@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "818756248734",
+    "project_id": "talkathon-b1d2c",
+    "storage_bucket": "talkathon-b1d2c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818756248734:android:5219fb62e40e7c194a878f",
+        "android_client_info": {
+          "package_name": "com.example.talkathon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7d7ZVZg2ZkmbJCd42uFUKiYjqfz_C_3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

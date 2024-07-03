@@ -6,9 +6,9 @@ import 'package:talkathon/utils/success_type.dart';
 
 class UserSignUpUseCase extends UseCase<SuccessType, UserSignUpEntity> {
   // final Object _repository;
-   final UserSignUpBaseClassRepo _repo;
+   final UserSignUpBaseClassRepo _user_SignUp_repo;
 
-  UserSignUpUseCase(this._repo);
+  UserSignUpUseCase(this._user_SignUp_repo);
 
   @override
   Future<SuccessType?> call({UserSignUpEntity? params}) async {
@@ -16,7 +16,7 @@ class UserSignUpUseCase extends UseCase<SuccessType, UserSignUpEntity> {
       return SuccessType(isSuccess: false, message: "Parameters cannot be null");
     }
     try {
-     final result = await _repo.signUp(params);
+     final result = await _user_SignUp_repo.signUp(params);
       return result;
     } catch (e) {
       return null;

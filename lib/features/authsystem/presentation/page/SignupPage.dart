@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talkathon/core/theme/app_pallet.dart';
@@ -32,11 +34,12 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-      child: BlocConsumer<AuthSignupBloc, AuthSignUpStateBloc>(
-        listener: (context, state) {
+          child: BlocConsumer<AuthSignupBloc, AuthSignUpStateBloc>(
+          listener: (context, state) {
           if (state is AuthSignupErrorState) {
             showSnackBar(context, "Error in signUp page");
           } else if (state is AuthSignUpSucessState) {
+            // listTextEditingController.clear();
             // Navigator.pushAndRemoveUntil(
             //   context,
             //   MaterialPageRoute(builder: (context) => const Blogpage()),(Route<dynamic> route) => false,
@@ -71,17 +74,23 @@ class _SignUpPageState extends State<SignUpPage> {
                             color: AppColors.cobaltBlue,
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: Image.network(
-                            'https://images.unsplash.com/photo-1579783483458-83d02161294e?q=80&w=2897&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                            fit: BoxFit.cover,
-                          ),
+                          child:
+                          state is AuthSignUpSucessState && state.imagePath != null
+                              ? Image.file(File(state.imagePath!), fit: BoxFit.cover)
+                              : const SizedBox(),
+                          // Image.network(
+                          //   'https://images.unsplash.com/photo-1579783483458-83d02161294e?q=80&w=2897&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                          //   fit: BoxFit.cover,
+                          // ),
                         ).paddingOnly(top: 20),
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: InkWell(
                               onTap: () {
-                                return selectImage();
+                               context.read<AuthSignupBloc>().add(
+                                 ImagePickerEvent(),
+                               );
                               },
                               child: const Icon(Icons.camera_alt_rounded,
                                   color: AppColors.darkRedColor)),
@@ -122,8 +131,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 25),
                     InkWell(
                       onTap: () {
-                        if (_globalKey.currentState!.validate()) {
-                          // All fields are valid, proceed with your action
+                        if (_globalKey.currentState!.validate()) {// All fields are valid, proceed with your action
+                          String? imagePath;
+                          if (state is AuthSignUpSucessState) {
+                            imagePath = state.imagePath;
+                          }
                           context.read<AuthSignupBloc>().add(
                                 AuthSignUpEvent(
                                   firstName: listTextEditingController[0].text,
@@ -131,18 +143,15 @@ class _SignUpPageState extends State<SignUpPage> {
                                   email: listTextEditingController[2].text,
                                   password: listTextEditingController[3].text,
                                   country: listTextEditingController[4].text,
-                                  phoneNumber:
-                                      listTextEditingController[5].text,
-                                  imgUrl: '',
+                                  phoneNumber: listTextEditingController[5].text,
+                                  imgUrl: imagePath??"",
                                   uUid: '',
                                 ),
                               );
-                          debugPrint(
-                              "Form validated successfully. Perform your action here.");
+                          debugPrint("Form validated successfully. Perform your action here.");
                         } else {
                           // Validation failed
-                          debugPrint(
-                              "Form validation failed. Please fill in all required fields.");
+                          debugPrint("Form validation failed. Please fill in all required fields.");
                         }
                       },
                       child: Container(
@@ -155,7 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: const Center(
                           child: Text(
                             "Finish",
-                            style: TextStyle(
+                            style:TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.whiteColor),
