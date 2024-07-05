@@ -2,6 +2,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:talkathon/features/chat/presentation/bloc/chat_bloc.dart';
+import 'package:talkathon/features/chat/presentation/bloc/chat_event.dart';
 import 'package:talkathon/utils/component/extension_of_size.dart';
 import 'package:talkathon/utils/padding_marging.dart';
 
@@ -12,6 +15,13 @@ class ChatListingPage extends StatefulWidget {
 }
 
 class _ChatListingPageState extends State<ChatListingPage> {
+  late ChatBloc chatBloc;
+  @override
+  void initState() {
+    super.initState();
+     chatBloc = BlocProvider.of<ChatBloc>(context);
+    chatBloc.add(UserListingEvent());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

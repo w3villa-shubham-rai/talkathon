@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talkathon/features/authsystem/data/datasource/authRemoteDataSource/authremotedatasourc.dart';
@@ -10,6 +11,10 @@ import 'package:talkathon/features/authsystem/domain/usecase/SignupUsecase.dart'
 import 'package:talkathon/features/authsystem/domain/usecase/login_usecase.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authbloc.dart';
 import 'package:talkathon/features/authsystem/presentation/page/SignupPage.dart';
+import 'package:talkathon/features/chat/data/datasourceimpl/listing_user_dataSource_impl.dart';
+import 'package:talkathon/features/chat/data/repositoryimpl/listing_user_repo_impl.dart';
+import 'package:talkathon/features/chat/domain/usecase/userlisting_usecase.dart';
+import 'package:talkathon/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:talkathon/utils/auth_wrapper.dart';
 
 
@@ -30,9 +35,17 @@ class MyApp extends StatelessWidget {
     final userSignInRemoteCall=UserSignInDataSourceImpl();
     final signUpUserRepoImpl= AuthSignInImpl(userSignInRemoteCall);
     final userLoginUseCase=UserSignInUseCase(signUpUserRepoImpl);
+
+
+    final databaseReference = FirebaseDatabase.instance.ref();
+     final userListFirebaseDataSource = ListingUserDataSourceImpl(databaseReference);
+    final fetchUsserListRepo = FetchUsserListRepoImpl(userListFirebaseDataSource);
+   final userListingUseCase = UserListingUseCase(fetchUsserListRepo);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthSignupBloc(userSignUpUseCase: userSignUpUseCase,userSignInUseCase: userLoginUseCase),),
+         BlocProvider(create: (context) => ChatBloc(userListingUseCase)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

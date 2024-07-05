@@ -5,7 +5,6 @@ import 'package:talkathon/utils/success_type.dart';
 
 class UserSignInUseCase extends UseCase<SuccessType, UserSignInEntity> {
   final UserSignInBaseRepo _userSignInBaseRepo;
-
   UserSignInUseCase(this._userSignInBaseRepo);
 
   @override
