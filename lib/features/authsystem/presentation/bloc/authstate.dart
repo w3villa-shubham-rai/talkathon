@@ -14,5 +14,3 @@ class AuthSignupErrorState extends AuthSignUpStateBloc {
   final String errorMessage;
   AuthSignupErrorState({required this.errorMessage});
 }
-
-

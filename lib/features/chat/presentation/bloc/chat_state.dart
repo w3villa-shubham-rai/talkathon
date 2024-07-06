@@ -12,6 +12,7 @@ class ChatErrorState extends ChatState {
 }
 
 class ChatSuccessState extends ChatState {
-  final List<UserModel> users;
-  ChatSuccessState({required this.users});
+  final List<UserModel>? users;
+  final String? userInputText;
+  ChatSuccessState({required this.users, this.userInputText});
 }

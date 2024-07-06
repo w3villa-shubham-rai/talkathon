@@ -5,7 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_event.dart';
+import 'package:talkathon/features/chat/presentation/bloc/chat_state.dart';
+import 'package:talkathon/features/chat/presentation/page/chat_room_Page.dart';
+import 'package:talkathon/utils/component/custom_snackbar.dart';
 import 'package:talkathon/utils/component/extension_of_size.dart';
+import 'package:talkathon/utils/loaderframe.dart';
 import 'package:talkathon/utils/padding_marging.dart';
 
 class ChatListingPage extends StatefulWidget {
@@ -16,6 +20,7 @@ class ChatListingPage extends StatefulWidget {
 
 class _ChatListingPageState extends State<ChatListingPage> {
   late ChatBloc chatBloc;
+  TextEditingController textSearchingController=TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -28,91 +33,116 @@ class _ChatListingPageState extends State<ChatListingPage> {
       backgroundColor: const Color(0xFFF8F8F8),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFFF2F2F2))
-                ),
-                child: TextFormField(
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    fillColor: Color(0xffFFFFFF),
-                    hintText: "Search employe name",
-                    hintStyle: TextStyle(color: Color(0xFFB7B7B7)),
-                    prefixIcon: Icon(Icons.search,size: 30,),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                  ),
-                ),
-              ).paddingSymmetric(vertical: 10),
-              ListView.separated(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                return  Row(
-                children: [
-                    Flexible(
-                      flex: 2,
-                      child: Container(
-                        height: 55,
-                        width: 55,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: ClipOval(
-                              child: Image.network("https://images.unsplash.com/photo-1716968921500-6bce26915c37?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw3fHx8ZW58MHx8fHx8", fit: BoxFit.cover,
-                              ),
-                         ),
+          child:BlocConsumer<ChatBloc,ChatState>(
+            listener: (context, state) {
+              if(state is ChatErrorState){
+                return showSnackBar(context, "Error in ChatListingPage page");
+              }
+            },
+            builder: (context, state) {
+              if (state is ChatLoadingState ) {
+                return const Center(child: LoaderFrame());
+              }
+              else if (state is ChatSuccessState){
+                return  Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFF2F2F2))
                       ),
-                    ),
-                    15.bw,
-                    Expanded(
-                    flex: 8,
-                     child: Column(
-                      children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              flex: 9,
-                              child: Text("Shubham Rai",style: TextStyle(color: Color(0xFF363636),fontSize: 16,fontWeight: FontWeight.bold),)),
-                    
-                            Expanded(
-                              flex: 2,
-                              child: Text("10:19",style: TextStyle(color: Color(0xFF40518A),fontSize: 12,fontWeight: FontWeight.w300),)),
-                           ],
+                      child: TextFormField(
+                        maxLines: null,
+                        controller: textSearchingController,
+                        onChanged: (value) {
+                          context.read<ChatBloc>().add(UserContactListingSearchingEvent(userTypingText: value),
+                          );
+                        },
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          fillColor: Color(0xffFFFFFF),
+                          hintText: "Search User name",
+                          hintStyle: TextStyle(color: Color(0xFFB7B7B7)),
+                          prefixIcon: Icon(Icons.search,size: 30,),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         ),
-                        Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Expanded(
-                              flex: 9,
-                              child: Text("Hello, Shubham Have you shared",style: TextStyle(color: Color(0xFFB7B7B7),fontSize: 13,fontWeight: FontWeight.w300),)),
-                            Container(
-                              height: 17,
-                              width: 17,
-                              decoration: const BoxDecoration(shape: BoxShape.circle,color: Color(0xFF2E58E6)),
-                              child: const Center(child: Text("3",style: TextStyle(color: Color(0xFFFFFFFF),fontSize: 12,fontWeight: FontWeight.bold),)),
-                            )
-                           ],
+                      ),
+                    ).paddingSymmetric(vertical: 10),
+                    Text("Total Contacts- ${state.users!.length??'0'}",style:  const TextStyle(color: Color(0xFFB7B7B7),fontSize: 13,fontWeight: FontWeight.bold),).paddingSymmetric(vertical: 5),
+                    ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final user = state.users![index];
+                          return  InkWell(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const UserChatRoom()),);
+                            },
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  flex: 2,
+                                  child: Container(
+                                    height: 55,
+                                    width: 55,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        state.users![index].imageUrl??"" ,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Image.network(
+                                            'https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=',
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      ),
+
+                                    ),
+                                  ),
+                                ),
+                                15.bw,
+                                 Expanded(
+                                  flex: 8,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                              flex: 9,
+                                              child: Text('${state.users![index].firstName} ${state.users![index].lastName}',style: TextStyle(color: Color(0xFF363636),fontSize: 16,fontWeight: FontWeight.bold),)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ).paddingSymmetric(vertical:5),
+                          );
+
+                        },
+                        separatorBuilder: (context, index) =>  const Divider(
+                          color: Color(0xFFE0E0E0),
                         ),
-                      ],
-                     ),
-                   ) 
-                ],
-              ).paddingSymmetric(vertical:5);
-            
-              }, 
-              separatorBuilder: (context, index) =>  const Divider(
-                color: Color(0xFFE0E0E0),
-              ),
-              itemCount: 20)
-             ],
-          ).paddingSymmetric(horizontal: 33,vertical: 10),
+                        itemCount: state.users?.length??0),
+
+                  ],
+                ).paddingSymmetric(horizontal: 33,vertical: 10);
+              }
+              else if (state is ChatErrorState) {
+                return Text('Error: ${state.errorMessage}');
+              } else {
+                return const Text('Unknown state');
+              }
+            },
+          )
+
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -37,8 +38,8 @@ class MyApp extends StatelessWidget {
     final userLoginUseCase=UserSignInUseCase(signUpUserRepoImpl);
 
 
-    final databaseReference = FirebaseDatabase.instance.ref();
-     final userListFirebaseDataSource = ListingUserDataSourceImpl(databaseReference);
+     FirebaseFirestore firebaseFireStore=FirebaseFirestore.instance;
+     final userListFirebaseDataSource = ListingUserDataSourceImpl(firebaseFireStore);
     final fetchUsserListRepo = FetchUsserListRepoImpl(userListFirebaseDataSource);
    final userListingUseCase = UserListingUseCase(fetchUsserListRepo);
 

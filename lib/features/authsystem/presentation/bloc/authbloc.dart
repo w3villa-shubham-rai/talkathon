@@ -65,7 +65,7 @@ class AuthSignupBloc extends Bloc<AuthEvent, AuthSignUpStateBloc> {
         userPassword: event.password,
       ));
       if (result != null && result.isSuccess) {
-        emit(AuthSignUpSucessState(data: result.toString()));
+          emit(AuthSignUpSucessState(data: result.toString()));
       } else {
         emit(AuthSignupErrorState(errorMessage: result?.message ?? "Signin failed"));
       }
