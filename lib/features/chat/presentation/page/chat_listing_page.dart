@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_event.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_state.dart';
-import 'package:talkathon/features/chat/presentation/page/chat_room_Page.dart';
+import 'package:talkathon/features/chatroom/presentation/pages/chat_room_page.dart';
 import 'package:talkathon/utils/component/custom_snackbar.dart';
 import 'package:talkathon/utils/component/extension_of_size.dart';
 import 'package:talkathon/utils/loaderframe.dart';
@@ -20,12 +21,20 @@ class ChatListingPage extends StatefulWidget {
 
 class _ChatListingPageState extends State<ChatListingPage> {
   late ChatBloc chatBloc;
+  String? _currentUserId;
   TextEditingController textSearchingController=TextEditingController();
   @override
   void initState() {
     super.initState();
      chatBloc = BlocProvider.of<ChatBloc>(context);
     chatBloc.add(UserListingEvent());
+    _getCurrentUserId();
+  }
+  void _getCurrentUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      _currentUserId = user?.uid;
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -79,7 +88,8 @@ class _ChatListingPageState extends State<ChatListingPage> {
                           final user = state.users![index];
                           return  InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const UserChatRoom()),);
+                              debugPrint(" user.firstName.toString()");
+                              Navigator.push(context, MaterialPageRoute(builder: (context) =>  UserChatRoom(recevierId: user.uUid.toString(),currentUserId: _currentUserId.toString(),userName: user.firstName.toString(),userProfileImage: user.imageUrl.toString(),)),);
                             },
                             child: Row(
                               children: [
