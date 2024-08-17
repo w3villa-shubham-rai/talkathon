@@ -8,6 +8,7 @@ import 'package:talkathon/features/chatroom/presentation/bloc/chatroom_state.dar
 class ChatRoombloc extends Bloc<UserChatRoomEvent, ChatRoomState> {
   final ChatRoomUserCase chatRoomUseCase;
   final FetchMessageUseCase fetchMessageUseCase;
+  
   ChatRoombloc(this.chatRoomUseCase, this.fetchMessageUseCase)
       : super(ChatRoomIntialState()) {
     on<UserSendMessageEvent>(createMesssageChannel);
@@ -19,13 +20,10 @@ class ChatRoombloc extends Bloc<UserChatRoomEvent, ChatRoomState> {
     emit(ChatRoomLaodingState());
     try {
       final result = await chatRoomUseCase.call(
-          params: Params(
-              message: event.message,
-              senderId: event.senderId,
-              reciverId: event.recevierId));
+          params: Params( message: event.message,  senderId: event.senderId,reciverId: event.recevierId));
       debugPrint("result of messsage +++ $result");
       if (result != null && result.isSuccess) {
-        emit(ChatRoomSuceessState());
+        // emit(ChatRoomSuceessState());
       } else {
         emit(ChatRoomErrorState(result?.message ?? 'Unknown error'));
       }

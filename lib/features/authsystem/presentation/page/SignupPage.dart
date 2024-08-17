@@ -138,12 +138,12 @@ class _SignUpPageState extends State<SignUpPage> {
                           }
                           context.read<AuthSignupBloc>().add(
                                 AuthSignUpEvent(
-                                  firstName: listTextEditingController[0].text,
-                                  lastName: listTextEditingController[1].text,
-                                  email: listTextEditingController[2].text,
-                                  password: listTextEditingController[3].text,
-                                  country: listTextEditingController[4].text,
-                                  phoneNumber: listTextEditingController[5].text,
+                                  firstName: listTextEditingController[0].text.trim(),
+                                  lastName: listTextEditingController[1].text.trim(),
+                                  email: listTextEditingController[2].text.trim(),
+                                  password: listTextEditingController[3].text.trim(),
+                                  country: listTextEditingController[4].text.trim(),
+                                  phoneNumber: listTextEditingController[5].text.trim(),
                                   imgUrl: imagePath??"",
                                   uUid: '',
                                 ),

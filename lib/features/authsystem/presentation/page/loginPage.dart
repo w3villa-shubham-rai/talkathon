@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authbloc.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authevent.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authstate.dart';
+import 'package:talkathon/features/authsystem/presentation/page/SignupPage.dart';
 import 'package:talkathon/utils/component/customTextFormField.dart';
 import 'package:talkathon/utils/component/custom_snackbar.dart';
 import 'package:talkathon/utils/component/extension_of_size.dart';
@@ -25,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body:BlocConsumer<AuthSignupBloc, AuthSignUpStateBloc>(
           listener: (context, state) {
             if (state is AuthSignupErrorState) {
@@ -99,9 +101,12 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text("Forget Password? Recover",style: TextStyle(fontSize: 12,color: AppColors.blackColor,fontWeight: FontWeight.w300),),
+                  const Text("Create Account",style: TextStyle(fontSize: 12,color: AppColors.blackColor,fontWeight: FontWeight.w300),),
                   5.bw,
-                  const Text("here",style: TextStyle(fontSize: 12,color: AppColors.pigmentRed,fontWeight: FontWeight.w500),)
+
+                   InkWell(
+                    onTap: ()=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUpPage(),)),
+                    child: const Text("here",style: TextStyle(fontSize: 12,color: AppColors.pigmentRed,fontWeight: FontWeight.w500),))
                 ],
               ),
               Row(

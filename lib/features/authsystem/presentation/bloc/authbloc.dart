@@ -8,7 +8,7 @@ import 'package:talkathon/features/authsystem/presentation/bloc/authevent.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authstate.dart';
 import 'package:talkathon/utils/imagepicker.dart';
 
-class AuthSignupBloc extends Bloc<AuthEvent, AuthSignUpStateBloc> {
+class AuthSignupBloc extends Bloc<AuthEvent,AuthSignUpStateBloc> {
   final UserSignUpUseCase userSignUpUseCase;
   final UserSignInUseCase userSignInUseCase;
   AuthSignupBloc({required this.userSignUpUseCase,required this.userSignInUseCase}) : super(AuthSignUpIntialState()) {
@@ -18,10 +18,11 @@ class AuthSignupBloc extends Bloc<AuthEvent, AuthSignUpStateBloc> {
   }
 
   Future<void> _handleSignUp(AuthSignUpEvent event, Emitter<AuthSignUpStateBloc> emit) async {
+    debugPrint("imag url in bloc ${event.imgUrl}");
     try {
       emit(AuthSignUpLoadingState());
       final result = await userSignUpUseCase(
-          params: UserSignUpEntity(
+        params: UserSignUpEntity(
         country: event.country,
         firstName: event.firstName,
         lastName: event.lastName,

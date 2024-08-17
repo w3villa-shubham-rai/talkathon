@@ -13,10 +13,12 @@ class ListingUserDataSourceImpl extends UserListFirebaseDataSourceBase {
     try {
       debugPrint("Fetching user list...");
       final querySnapshot = await firebaseFireStore.collection('users').get();
-      debugPrint("Fetching user list... data: ${querySnapshot.docs}");
+      
+      debugPrint("Fetching user list... data: $querySnapshot");
 
       final List<UserModel> users = querySnapshot.docs.map((doc) {
-        // debugPrint("abcdefgh  $doc.data()");
+
+        debugPrint("abcdefgh  ${doc.data()}");
         // Map<dynamic, dynamic> value=doc.data();
         // {
         //   country:"India"
@@ -24,7 +26,6 @@ class ListingUserDataSourceImpl extends UserListFirebaseDataSourceBase {
         // }
         // debugPrint("ddddddddddd  $value");
         return UserModel.fromSnapshot(doc.data());
-
       }).toList();
 
       debugPrint("Users fetched: $users");

@@ -13,9 +13,11 @@ class UserSignUpUseCase extends UseCase<SuccessType, UserSignUpEntity> {
   @override
   Future<SuccessType?> call({UserSignUpEntity? params}) async {
     if (params == null) {
+      debugPrint("params data here usecase ${params!.firstName},${params!.lastName},${params!.country},${params!.imageUrl},${params!.password},${params!.userEmail},${params!.phoneNumber}");
       return SuccessType(isSuccess: false, message: "Parameters cannot be null");
     }
     try {
+       debugPrint("params data here usecase tryR${params!.firstName},${params!.lastName},${params!.country},${params!.imageUrl},${params!.password},${params!.userEmail},${params!.phoneNumber}");
      final result = await _user_SignUp_repo.signUp(params);
       return result;
     } catch (e) {
