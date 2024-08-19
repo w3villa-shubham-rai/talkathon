@@ -222,6 +222,7 @@ class _UserChatRoomState extends State<UserChatRoom> {
                           message: message,
                           recevierId: widget.recevierId,
                           senderId: widget.currentUserId,
+                        
                         ),
                       );
                   _messageController.clear();

@@ -14,6 +14,7 @@ import 'package:talkathon/features/authsystem/presentation/page/SignupPage.dart'
 import 'package:talkathon/features/authsystem/presentation/page/loginPage.dart';
 import 'package:talkathon/features/chat/data/datasourceimpl/listing_user_dataSource_impl.dart';
 import 'package:talkathon/features/chat/data/repositoryimpl/listing_user_repo_impl.dart';
+import 'package:talkathon/features/chat/domain/usecase/fetch_userGroup.dart';
 import 'package:talkathon/features/chat/domain/usecase/userlisting_usecase.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:talkathon/features/chat/presentation/page/chat_listing_page.dart';
@@ -24,6 +25,11 @@ import 'package:talkathon/features/chatroom/data/datasourcerepoimpl/fetch_messag
 import 'package:talkathon/features/chatroom/domain/usecase/chatroom_usecase.dart';
 import 'package:talkathon/features/chatroom/domain/usecase/fetch_message_usecase.dart';
 import 'package:talkathon/features/chatroom/presentation/bloc/chat_room_bloc.dart';
+import 'package:talkathon/features/groupmessage/data/datasource/group_remote_data_source.dart';
+import 'package:talkathon/features/groupmessage/data/repository/group_repository_impl.dart';
+import 'package:talkathon/features/groupmessage/domain/repository/grouprepostory.dart';
+import 'package:talkathon/features/groupmessage/domain/usecase/group_usecase.dart';
+import 'package:talkathon/features/groupmessage/presentation/bloc/group_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +67,13 @@ class MyApp extends StatelessWidget {
         FetchMessageRepoImpl(fetchMessageDataSourceImpl);
     final fetchMessageUseCase = FetchMessageUseCase(fetchMessageRepoImpl);
 
+
+    // ++++++++++++++++Group listing page+++++++++++
+final firebaseFirestore = FirebaseFirestore.instance;
+final groupRemoteDataSource = GroupRemoteDataSource(firebaseFirestore);
+final groupRepository = GroupRepositoryImpl(groupRemoteDataSource);
+final groupListingUseCase = GroupListingUseCase(groupRepository);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -74,7 +87,19 @@ class MyApp extends StatelessWidget {
               ChatRoombloc(chatRoomUserCase, fetchMessageUseCase),
         ),
         BlocProvider(
-          create: (context) => ChatBloc(userListingUseCase),
+          create: (context) => ChatBloc(
+            userListingUseCase,
+            groupListingUseCase
+          ),
+        ),
+        BlocProvider(
+          create: (context) => GroupCreationBloc(
+            CreateGroupUseCase(
+              GroupRepositoryImpl(
+                GroupRemoteDataSource(FirebaseFirestore.instance),
+              ),
+            ),
+          ),
         ),
       ],
       child: MaterialApp(
@@ -92,7 +117,9 @@ class MyApp extends StatelessWidget {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
-              return snapshot.data == true ? const ChatListingPage() : const LoginPage();
+              return snapshot.data == true
+                  ? const ChatListingPage()
+                  : const LoginPage();
             }
           },
         ),
@@ -107,7 +134,7 @@ class MyApp extends StatelessWidget {
     } else {
       try {
         await user!.reload();
-        user = firebaseAuth.currentUser; 
+        user = firebaseAuth.currentUser;
         if (user == null || user.uid.isEmpty) {
           firebaseAuth.signOut();
           return false;
@@ -117,7 +144,7 @@ class MyApp extends StatelessWidget {
           firebaseAuth.signOut();
           return false;
         } else {
-           print('Error during user verification: $e');
+          print('Error during user verification: $e');
           firebaseAuth.signOut();
           return false;
         }
