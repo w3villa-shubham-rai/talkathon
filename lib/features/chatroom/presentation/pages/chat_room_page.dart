@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:talkathon/core/theme/app_pallet.dart';
@@ -123,11 +124,25 @@ class _UserChatRoomState extends State<UserChatRoom> {
                 if (timestamp != null) {
                   timeString = DateFormat('hh:mm a').format(timestamp.toDate());
                 }
-                return Align(
-                    alignment: isCurrentUser
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Column(
+                return Row(
+                  mainAxisAlignment: isCurrentUser
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Visibility(
+                      visible:  message?['senderId'] != widget.currentUserId,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        clipBehavior: Clip.antiAlias,
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          color: Colors.amber,
+                        ),
+                      ).paddingSymmetric(horizontal: 8),
+                    ),
+                    Column(
                       children: [
                         Container(
                           decoration: BoxDecoration(
@@ -148,42 +163,9 @@ class _UserChatRoomState extends State<UserChatRoom> {
                               color: Color(0xFF646464), fontSize: 9),
                         ).paddingSymmetric(horizontal: 10, vertical: 3),
                       ],
-                    )
-
-                    // Container(
-                    //   margin:
-                    //       const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    //   padding: const EdgeInsets.all(10),
-                    //   decoration: BoxDecoration(
-                    //     color:
-                    //         isCurrentUser ? Colors.blue[200] : Colors.grey[300],
-                    //     borderRadius: BorderRadius.circular(15),
-                    //   ),
-                    //   child: Column(
-                    //     crossAxisAlignment: isCurrentUser
-                    //         ? CrossAxisAlignment.end
-                    //         : CrossAxisAlignment.start,
-                    //     children: [
-                    //       Text(
-                    //         message?['message'] ?? '',
-                    //         style: TextStyle(
-                    //           color: isCurrentUser ? Colors.white : Colors.black,
-                    //         ),
-                    //       ),
-                    //       const SizedBox(height: 5),
-                    //       Text(
-                    //         timeString,
-                    //         style: TextStyle(
-                    //           color:
-                    //               isCurrentUser ? Colors.white70 : Colors.black54,
-                    //           fontSize: 10,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-
-                    );
+                    ),
+                  ],
+                );
               },
             );
           } else {

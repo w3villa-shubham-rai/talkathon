@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:talkathon/core/theme/app_pallet.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_event.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_state.dart';
+import 'package:talkathon/features/chat/presentation/page/group_creation_page.dart';
 import 'package:talkathon/features/chatroom/presentation/pages/chat_room_page.dart';
 import 'package:talkathon/utils/component/custom_snackbar.dart';
 import 'package:talkathon/utils/component/extension_of_size.dart';
@@ -126,7 +128,7 @@ class _ChatListingPageState extends State<ChatListingPage> {
                                         children: [
                                           Expanded(
                                               flex: 9,
-                                              child: Text('${state.users![index].firstName} ${state.users![index].lastName}',style: TextStyle(color: Color(0xFF363636),fontSize: 16,fontWeight: FontWeight.bold),)),
+                                              child: Text('${state.users![index].firstName} ${state.users![index].lastName}',style: const TextStyle(color: Color(0xFF363636),fontSize: 16,fontWeight: FontWeight.bold),)),
                                         ],
                                       ),
                                     ],
@@ -155,6 +157,19 @@ class _ChatListingPageState extends State<ChatListingPage> {
 
         ),
       ),
+      floatingActionButton:FloatingActionButton(
+        child: const Icon(Icons.chat,color: AppColors.antiFlashWhite,),
+        backgroundColor: AppColors.cobaltBlue,
+        onPressed: () {
+         Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GroupCreationPage(),
+              ),
+            );
+      },
+     
+      ) ,
     );
   }
 }
