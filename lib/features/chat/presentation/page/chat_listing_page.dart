@@ -8,6 +8,7 @@ import 'package:talkathon/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_event.dart';
 import 'package:talkathon/features/chat/presentation/bloc/chat_state.dart';
 import 'package:talkathon/features/chatroom/presentation/pages/chat_room_page.dart';
+import 'package:talkathon/features/message_for_group/presentation/pages/group_chatroom_message.dart';
 import 'package:talkathon/features/groupmessage/presentation/group_creation_view.dart';
 import 'package:talkathon/utils/component/custom_snackbar.dart';
 import 'package:talkathon/utils/component/extension_of_size.dart';
@@ -181,7 +182,17 @@ class _ChatListingPageState extends State<ChatListingPage> {
                           final group = state.groups![index];
                           return InkWell(
                             onTap: () {
-                              // Handle group click if necessary
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GroupChatRoom(
+                                    groupId: group.id,
+                                    groupName: group.name,
+                                    participantIds: group.participantIds,
+                                    adminId: group.adminId,
+                                  ),
+                                ),
+                              );
                             },
                             child: Row(
                               children: [
@@ -192,7 +203,7 @@ class _ChatListingPageState extends State<ChatListingPage> {
                                     width: 55,
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.grey, // Placeholder color
+                                      color: Colors.grey,
                                     ),
                                     child: const Icon(
                                       Icons.group,

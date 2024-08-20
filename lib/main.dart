@@ -30,6 +30,12 @@ import 'package:talkathon/features/groupmessage/data/repository/group_repository
 import 'package:talkathon/features/groupmessage/domain/repository/grouprepostory.dart';
 import 'package:talkathon/features/groupmessage/domain/usecase/group_usecase.dart';
 import 'package:talkathon/features/groupmessage/presentation/bloc/group_bloc.dart';
+import 'package:talkathon/features/message_for_group/data/dataSource/groupmessage_dataSource.dart';
+import 'package:talkathon/features/message_for_group/data/repository/GroupMessageRepositoryImpl.dart';
+import 'package:talkathon/features/message_for_group/domain/repository/group_message_repository.dart';
+import 'package:talkathon/features/message_for_group/domain/usecase/get_messages_usecase.dart';
+import 'package:talkathon/features/message_for_group/domain/usecase/sendmessageusecase.dart';
+import 'package:talkathon/features/message_for_group/presentation/bloc/group_chat_room_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,12 +73,22 @@ class MyApp extends StatelessWidget {
         FetchMessageRepoImpl(fetchMessageDataSourceImpl);
     final fetchMessageUseCase = FetchMessageUseCase(fetchMessageRepoImpl);
 
-
     // ++++++++++++++++Group listing page+++++++++++
-final firebaseFirestore = FirebaseFirestore.instance;
-final groupRemoteDataSource = GroupRemoteDataSource(firebaseFirestore);
-final groupRepository = GroupRepositoryImpl(groupRemoteDataSource);
-final groupListingUseCase = GroupListingUseCase(groupRepository);
+    final firebaseFirestore = FirebaseFirestore.instance;
+    final groupRemoteDataSource = GroupRemoteDataSource(firebaseFirestore);
+    final groupRepository = GroupRepositoryImpl(groupRemoteDataSource);
+    final groupListingUseCase = GroupListingUseCase(groupRepository);
+
+// +++++++++++++++++++  send grop message ++++++++++++++++
+
+final groupMessageRemoteDataSource = GroupMessageRemoteDataSource(firebaseFirestore);
+
+// Create an instance of the concrete repository
+final groupMessageRepository = GroupMessageRepositoryImpl(groupMessageRemoteDataSource);
+
+ 
+  final getMessagesUseCase = GetMessagesUseCase(groupMessageRepository);
+  final sendMessageUseCase = SendMessageUseCase(groupMessageRepository);
 
     return MultiBlocProvider(
       providers: [
@@ -87,10 +103,8 @@ final groupListingUseCase = GroupListingUseCase(groupRepository);
               ChatRoombloc(chatRoomUserCase, fetchMessageUseCase),
         ),
         BlocProvider(
-          create: (context) => ChatBloc(
-            userListingUseCase,
-            groupListingUseCase
-          ),
+          create: (context) =>
+              ChatBloc(userListingUseCase, groupListingUseCase),
         ),
         BlocProvider(
           create: (context) => GroupCreationBloc(
@@ -99,6 +113,12 @@ final groupListingUseCase = GroupListingUseCase(groupRepository);
                 GroupRemoteDataSource(FirebaseFirestore.instance),
               ),
             ),
+          ),
+        ),
+        BlocProvider<GroupMessageBloc>(
+          create: (context) => GroupMessageBloc(
+            sendMessageUseCase: sendMessageUseCase,
+            getMessagesUseCase: getMessagesUseCase,
           ),
         ),
       ],
