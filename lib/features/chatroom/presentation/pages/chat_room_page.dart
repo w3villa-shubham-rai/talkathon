@@ -117,14 +117,15 @@ class _UserChatRoomState extends State<UserChatRoom> {
               itemBuilder: (context, index) {
                 final reversedIndex = data!.length - index - 1;
                 final message = data?[reversedIndex];
-                final isCurrentUser =
-                    message?['senderId'] == widget.currentUserId;
+                final isCurrentUser =message?['senderId'] == widget.currentUserId;
                 final timestamp = message?['timestamp'];
                 String timeString = '';
                 if (timestamp != null) {
                   timeString = DateFormat('hh:mm a').format(timestamp.toDate());
                 }
-                return Row(
+                return
+                
+                 Row(
                   mainAxisAlignment: isCurrentUser
                       ? MainAxisAlignment.end
                       : MainAxisAlignment.start,
@@ -166,6 +167,7 @@ class _UserChatRoomState extends State<UserChatRoom> {
                     ),
                   ],
                 );
+           
               },
             );
           } else {

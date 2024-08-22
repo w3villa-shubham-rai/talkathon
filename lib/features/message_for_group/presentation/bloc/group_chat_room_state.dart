@@ -13,9 +13,10 @@ class GroupMessageFailure extends GroupMessageState {
 
   GroupMessageFailure(this.errorMessage);
 }
-
 class GroupMessageLoaded extends GroupMessageState {
-  final List<GroupMessage> messages;
-
+  final Stream<List<GroupMessage>> messages;
   GroupMessageLoaded({required this.messages});
 }
+
+
+

@@ -14,7 +14,7 @@ class GroupMessageBloc extends Bloc<GroupMessageEvent, GroupMessageState> {
     required this.getMessagesUseCase,
   }) : super(GroupMessageInitial()) {
     on<SendMessageEvent>(_onSendMessage);
-    on<LoadMessagesEvent>(_onLoadMessages);
+    on<LoadMessagesEvent>(onLoadMessages);
   }
 
   Future<void> _onSendMessage(
@@ -29,13 +29,12 @@ class GroupMessageBloc extends Bloc<GroupMessageEvent, GroupMessageState> {
     }
   }
 
-  void _onLoadMessages(
+  void onLoadMessages(
       LoadMessagesEvent event, Emitter<GroupMessageState> emit) {
     emit(GroupMessageInProgress());
     try {
-      event.messages.listen((messages) {
-        emit(GroupMessageLoaded(messages: messages));
-      });
+      final messageStream = getMessagesUseCase.execute(event.groupId);
+      emit(GroupMessageLoaded(messages: messageStream));
     } catch (e) {
       emit(GroupMessageFailure(e.toString()));
     }

@@ -10,7 +10,8 @@ class SendMessageEvent extends GroupMessageEvent {
 }
 
 class LoadMessagesEvent extends GroupMessageEvent {
-  final Stream<List<GroupMessage>> messages;
+  final String groupId;
+  final String adminId;
 
-  LoadMessagesEvent(this.messages);
+  LoadMessagesEvent(this.groupId, this.adminId);
 }

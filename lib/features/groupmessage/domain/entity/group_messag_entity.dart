@@ -13,6 +13,8 @@ class GroupMessage {
     required this.sentAt,
   });
 
+  get timestamp => null;
+
 
   Map<String, dynamic> toMap() {
     return {

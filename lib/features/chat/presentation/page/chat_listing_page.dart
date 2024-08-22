@@ -23,7 +23,7 @@ class ChatListingPage extends StatefulWidget {
 
 class _ChatListingPageState extends State<ChatListingPage> {
   late ChatBloc chatBloc;
-  String? _currentUserId;
+  String? currentUserId;
   TextEditingController textSearchingController = TextEditingController();
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _ChatListingPageState extends State<ChatListingPage> {
   void _getCurrentUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     setState(() {
-      _currentUserId = user?.uid;
+      currentUserId = user?.uid;
     });
   }
 
@@ -110,7 +110,7 @@ class _ChatListingPageState extends State<ChatListingPage> {
                                     builder: (context) => UserChatRoom(
                                           recevierId: user.uUid.toString(),
                                           currentUserId:
-                                              _currentUserId.toString(),
+                                              currentUserId.toString(),
                                           userName: user.firstName.toString(),
                                           userProfileImage:
                                               user.imageUrl.toString(),
@@ -190,6 +190,7 @@ class _ChatListingPageState extends State<ChatListingPage> {
                                     groupName: group.name,
                                     participantIds: group.participantIds,
                                     adminId: group.adminId,
+                                    currentUserId:  currentUserId.toString(),
                                   ),
                                 ),
                               );
@@ -249,7 +250,6 @@ class _ChatListingPageState extends State<ChatListingPage> {
       floatingActionButton: BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
           return FloatingActionButton(
-            child: const Icon(Icons.chat, color: AppColors.antiFlashWhite),
             backgroundColor: AppColors.cobaltBlue,
             onPressed: () {
               if (state is ChatSuccessState) {
@@ -266,6 +266,7 @@ class _ChatListingPageState extends State<ChatListingPage> {
                 showSnackBar(context, "Failed to load users.");
               }
             },
+            child: const Icon(Icons.chat, color: AppColors.antiFlashWhite),
           );
         },
       ),

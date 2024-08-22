@@ -1,7 +1,10 @@
 // lib/features/groupmessage/presentation/pages/group_chat_room.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:talkathon/core/theme/app_pallet.dart';
 import 'package:talkathon/features/groupmessage/domain/entity/group_messag_entity.dart';
 import 'package:talkathon/features/message_for_group/presentation/bloc/group_chat_room_bloc.dart';
 import 'package:talkathon/features/message_for_group/presentation/bloc/group_chat_room_event.dart';
@@ -14,14 +17,16 @@ class GroupChatRoom extends StatefulWidget {
   final String groupName;
   final List<String> participantIds;
   final String adminId;
+  final String currentUserId;
 
   const GroupChatRoom({
-    Key? key,
+    super.key,
     required this.groupId,
     required this.groupName,
     required this.participantIds,
     required this.adminId,
-  }) : super(key: key);
+    required this.currentUserId,
+  });
 
   @override
   _GroupChatRoomState createState() => _GroupChatRoomState();
@@ -36,6 +41,14 @@ class _GroupChatRoomState extends State<GroupChatRoom> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<GroupMessageBloc>()
+        .add(LoadMessagesEvent(widget.groupId, widget.adminId));
+  }
+
   void _sendMessage() {
     final messageContent = _messageController.text.trim();
     if (messageContent.isNotEmpty) {
@@ -45,7 +58,8 @@ class _GroupChatRoomState extends State<GroupChatRoom> {
         sentAt: DateTime.now(),
         id: DateTime.now().millisecondsSinceEpoch.toString(),
       );
-      debugPrint( "her edat i want to show ${widget.adminId},${DateTime.now().millisecondsSinceEpoch.toString()}");
+      debugPrint(
+          "her edat i want to show ${widget.adminId},${DateTime.now().millisecondsSinceEpoch.toString()}");
       context.read<GroupMessageBloc>().add(
             SendMessageEvent(widget.groupId, message),
           );
@@ -66,31 +80,87 @@ class _GroupChatRoomState extends State<GroupChatRoom> {
         listener: (context, state) {
           if (state is GroupMessageFailure) {
             showSnackBar(context, state.errorMessage);
-          } else if (state is GroupMessageSuccess) {
-            // Optionally handle success (e.g., show a confirmation message)
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount:
-                      10, // This should be dynamically populated from the state
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text('User $index: Message $index'),
-                    );
-                  },
-                ),
-              ),
-              SafeArea(
-                child: buildMessageInput(),
-              ),
-            ],
-          );
+          if (state is GroupMessageLoaded) {
+            return StreamBuilder<List<GroupMessage>>(
+              stream: state.messages,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No messages yet.'));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final message = snapshot.data![index];
+                      final isCurrentUser =
+                          message.senderId == widget.currentUserId;
+                      debugPrint("isCurrentUser $isCurrentUser");
+                      final timestamp = message.sentAt;
+                      String timeString = '';
+                      if (timestamp != null) {
+                        timeString = DateFormat('hh:mm a').format(timestamp);
+                      }
+
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: isCurrentUser
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                        children: [
+                          Visibility(
+                            visible: isCurrentUser == widget.currentUserId,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              clipBehavior: Clip.antiAlias,
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                color: Colors.amber,
+                              ),
+                            ).paddingSymmetric(horizontal: 8),
+                          ),
+                          Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: isCurrentUser
+                                      ? Color(0xFFE8EEFC)
+                                      : Color(0xFFEDEDED),
+                                ),
+                                child: Text(
+                                  message.text ?? '',
+                                  style: const TextStyle(
+                                      color: AppColors.blackColor,
+                                      fontSize: 15),
+                                ).paddingSymmetric(horizontal: 10, vertical: 8),
+                              ),
+                               Text(
+                               timeString,
+                                style: TextStyle(
+                                    color: Color(0xFF646464), fontSize: 9),
+                              ).paddingSymmetric(horizontal: 10, vertical: 3),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+            );
+          } else {
+            return const Center(child: Text('Loading messages...'));
+          }
         },
       ),
+      bottomNavigationBar: SafeArea(child: buildMessageInput()),
     );
   }
 
