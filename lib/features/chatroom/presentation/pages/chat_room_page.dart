@@ -94,92 +94,87 @@ class _UserChatRoomState extends State<UserChatRoom> {
         ),
       ),
       backgroundColor: const Color(0xFFF8F8F8),
-      body:
-       Column(
-         children: [
-           StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: getallMessages(chatRoomId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (snapshot.hasData) {
-                final data = snapshot.data?.docs;
-                if (data != null) {
-                  for (var doc in data) {
-                    debugPrint("MESSAGE OF DATA: ${doc.data()}");
-                  }
-                }
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _scrollToBottom();
-                });
-                return ListView.builder(
-                  controller: _scrollController,
-                  itemCount: data?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final reversedIndex = data!.length - index - 1;
-                    final message = data?[reversedIndex];
-                    final isCurrentUser =message?['senderId'] == widget.currentUserId;
-                    final timestamp = message?['timestamp'];
-                    String timeString = '';
-                    if (timestamp != null) {
-                      timeString = DateFormat('hh:mm a').format(timestamp.toDate());
-                    }
-                    return
-                    
-                     Row(
-                      mainAxisAlignment: isCurrentUser
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Visibility(
-                          visible:  message?['senderId'] != widget.currentUserId,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(30),
-                            clipBehavior: Clip.antiAlias,
-                            child: Container(
-                              height: 40,
-                              width: 40,
-                              color: Colors.amber,
-                            ),
-                          ).paddingSymmetric(horizontal: 8),
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                color: isCurrentUser
-                                    ? Color(0xFFE8EEFC)
-                                    : Color(0xFFEDEDED),
-                              ),
-                              child: Text(
-                                message?['message'] ?? '',
-                                style: const TextStyle(
-                                    color: AppColors.blackColor, fontSize: 15),
-                              ).paddingSymmetric(horizontal: 10, vertical: 8),
-                            ),
-                            Text(
-                              timeString,
-                              style: const TextStyle(
-                                  color: Color(0xFF646464), fontSize: 9),
-                            ).paddingSymmetric(horizontal: 10, vertical: 3),
-                          ],
-                        ),
-                      ],
-                    );
-                               
-                  },
-                );
-              } else {
-                return const Center(child: Text('No messages yet.'));
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: getallMessages(chatRoomId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final data = snapshot.data?.docs;
+            if (data != null) {
+              for (var doc in data) {
+                debugPrint("MESSAGE OF DATA: ${doc.data()}");
               }
-            },
-          ).paddingSymmetric(horizontal: 5),
-         ],
-       ),
+            }
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _scrollToBottom();
+            });
+            return ListView.builder(
+              controller: _scrollController,
+              itemCount: data?.length ?? 0,
+              itemBuilder: (context, index) {
+                final reversedIndex = data!.length - index - 1;
+                final message = data?[reversedIndex];
+                final isCurrentUser =message?['senderId'] == widget.currentUserId;
+                final timestamp = message?['timestamp'];
+                String timeString = '';
+                if (timestamp != null) {
+                  timeString = DateFormat('hh:mm a').format(timestamp.toDate());
+                }
+                return
+                
+                 Row(
+                  mainAxisAlignment: isCurrentUser
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Visibility(
+                      visible:  message?['senderId'] != widget.currentUserId,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        clipBehavior: Clip.antiAlias,
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          color: Colors.amber,
+                        ),
+                      ).paddingSymmetric(horizontal: 8),
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: isCurrentUser
+                                ? Color(0xFFE8EEFC)
+                                : Color(0xFFEDEDED),
+                          ),
+                          child: Text(
+                            message?['message'] ?? '',
+                            style: const TextStyle(
+                                color: AppColors.blackColor, fontSize: 15),
+                          ).paddingSymmetric(horizontal: 10, vertical: 8),
+                        ),
+                        Text(
+                          timeString,
+                          style: const TextStyle(
+                              color: Color(0xFF646464), fontSize: 9),
+                        ).paddingSymmetric(horizontal: 10, vertical: 3),
+                      ],
+                    ),
+                  ],
+                );
+           
+              },
+            );
+          } else {
+            return const Center(child: Text('No messages yet.'));
+          }
+        },
+      ).paddingSymmetric(horizontal: 5),
       bottomNavigationBar: SafeArea(child: _buildMessageInput()),
     );
   }
