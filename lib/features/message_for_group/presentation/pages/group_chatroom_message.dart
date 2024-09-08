@@ -79,92 +79,102 @@ Widget build(BuildContext context) {
     appBar: AppBar(
       title: Text(widget.groupName),
     ),
-    body: BlocConsumer<GroupMessageBloc, GroupMessageState>(
-      listener: (context, state) {
-        if (state is GroupMessageFailure) {
-          showSnackBar(context, state.errorMessage);
-        }
-      },
-      builder: (context, state) {
-        if (state is GroupMessageLoaded) {
-          return StreamBuilder<List<GroupMessage>>(
-            stream: state.messages,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No messages yet.'));
-              } else {
-                 WidgetsBinding.instance.addPostFrameCallback((_) {
-              _scrollToBottom();
-            });
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    final message = snapshot.data![index];
-                    final isCurrentUser = message.senderId == widget.currentUserId;
-                    final timestamp = message.sentAt;
-                    String timeString = '';
-                    if (timestamp != null) {
-                      timeString = DateFormat('hh:mm a').format(timestamp);
-                    }
-
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: isCurrentUser
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.start,
-                      children: [
-                        Visibility(
-                          visible: isCurrentUser,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(30),
-                            clipBehavior: Clip.antiAlias,
-                            child: Container(
-                              height: 40,
-                              width: 40,
-                              color: Colors.amber,
-                            ),
-                          ).paddingSymmetric(horizontal: 8),
+    body: Column(
+      children: [
+        BlocConsumer<GroupMessageBloc, GroupMessageState>(
+          listener: (context, state) {
+            if (state is GroupMessageFailure) {
+              showSnackBar(context, state.errorMessage);
+            }
+          },
+          builder: (context, state) {
+            if (state is GroupMessageLoaded) {
+              return StreamBuilder<List<GroupMessage>>(
+                stream: state.messages,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No messages yet.'));
+                  } else {
+                     WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _scrollToBottom();
+                });
+                    return Expanded(
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            final message = snapshot.data![index];
+                            final isCurrentUser = message.senderId == widget.currentUserId;
+                            final timestamp = message.sentAt;
+                            String timeString = '';
+                            if (timestamp != null) {
+                              timeString = DateFormat('hh:mm a').format(timestamp);
+                            }
+                                
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: isCurrentUser
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
+                              children: [
+                                Visibility(
+                                  visible: isCurrentUser,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(30),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: Container(
+                                      height: 40,
+                                      width: 40,
+                                      color: Colors.amber,
+                                    ),
+                                  ).paddingSymmetric(horizontal: 8),
+                                ),
+                                Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(6),
+                                        color: isCurrentUser
+                                            ? Color(0xFFE8EEFC)
+                                            : Color(0xFFEDEDED),
+                                      ),
+                                      child: Text(
+                                        message.text ?? '',
+                                        style: const TextStyle(
+                                            color: AppColors.blackColor,
+                                            fontSize: 15),
+                                      ).paddingSymmetric(horizontal: 10, vertical: 8),
+                                    ),
+                                     Text(
+                                     timeString,
+                                      style: TextStyle(
+                                          color: Color(0xFF646464), fontSize: 9),
+                                    ).paddingSymmetric(horizontal: 10, vertical: 3),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
                         ),
-                        Column(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                color: isCurrentUser
-                                    ? Color(0xFFE8EEFC)
-                                    : Color(0xFFEDEDED),
-                              ),
-                              child: Text(
-                                message.text ?? '',
-                                style: const TextStyle(
-                                    color: AppColors.blackColor,
-                                    fontSize: 15),
-                              ).paddingSymmetric(horizontal: 10, vertical: 8),
-                            ),
-                             Text(
-                             timeString,
-                              style: TextStyle(
-                                  color: Color(0xFF646464), fontSize: 9),
-                            ).paddingSymmetric(horizontal: 10, vertical: 3),
-                          ],
-                        ),
-                      ],
+                      ),
                     );
-                  },
-                );
-              }
-            },
-          );
-        } else {
-          return const Center(child: Text('Loading messages...'));
-        }
-      },
+                  }
+                },
+              );
+            } else {
+              return const Center(child: Text('Loading messages...'));
+            }
+          },
+        ),
+        buildMessageInput(),
+      ],
     ),
-    bottomNavigationBar: SafeArea(child: buildMessageInput()),
+    
   );
 }
 
