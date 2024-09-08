@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talkathon/features/message_for_group/domain/usecase/get_messages_usecase.dart';
 import 'package:talkathon/features/message_for_group/domain/usecase/sendmessageusecase.dart';
@@ -14,23 +13,23 @@ class GroupMessageBloc extends Bloc<GroupMessageEvent, GroupMessageState> {
     required this.getMessagesUseCase,
   }) : super(GroupMessageInitial()) {
     on<SendMessageEvent>(_onSendMessage);
-    on<LoadMessagesEvent>(onLoadMessages);
+    on<LoadMessagesEvent>(_onLoadMessages);
   }
 
-  Future<void> _onSendMessage(
-      SendMessageEvent event, Emitter<GroupMessageState> emit) async {
+  Future<void> _onSendMessage(SendMessageEvent event, Emitter<GroupMessageState> emit) async {
     emit(GroupMessageInProgress());
     try {
       await sendMessageUseCase.execute(event.groupId, event.message);
-      debugPrint("group id ${event.groupId}");
+      // Optionally emit success or failure state
       emit(GroupMessageSuccess());
+      // Reload messages after sending
+      add(LoadMessagesEvent(event.groupId, event.message.senderId));
     } catch (e) {
       emit(GroupMessageFailure(e.toString()));
     }
   }
 
-  void onLoadMessages(
-      LoadMessagesEvent event, Emitter<GroupMessageState> emit) {
+  void _onLoadMessages(LoadMessagesEvent event, Emitter<GroupMessageState> emit) {
     emit(GroupMessageInProgress());
     try {
       final messageStream = getMessagesUseCase.execute(event.groupId);
