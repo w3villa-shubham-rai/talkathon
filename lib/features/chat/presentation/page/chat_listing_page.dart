@@ -10,7 +10,7 @@ import 'package:talkathon/features/message_for_group/presentation/pages/group_ch
 import 'package:talkathon/features/groupmessage/presentation/group_creation_view.dart';
 import 'package:talkathon/utils/component/custom_snackbar.dart';
 import 'package:talkathon/utils/loaderframe.dart';
-import 'package:talkathon/utils/padding_marging.dart';
+
 
 class ChatListingPage extends StatefulWidget {
   const ChatListingPage({super.key});
@@ -122,6 +122,8 @@ class _ChatListingPageState extends State<ChatListingPage> {
                                   currentUserId: currentUserId.toString(),
                                   userName: user.firstName.toString(),
                                   userProfileImage: user.imageUrl.toString(),
+                                  isOnline: user.isOnline,
+                                  lastSeen: user.lastOnline.toString(),
                                 ),
                               ),
                             );

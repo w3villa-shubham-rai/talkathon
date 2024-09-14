@@ -7,6 +7,8 @@ class User {
   final String password;
   final String phoneNumber;
   final String userEmail;
+  final bool isOnline;
+  final String lastOnline;
 
   User({
     required this.uUid,
@@ -17,5 +19,7 @@ class User {
     required this.password,
     required this.phoneNumber,
     required this.userEmail,
+    this.isOnline=false,
+    this.lastOnline='',
   });
 }

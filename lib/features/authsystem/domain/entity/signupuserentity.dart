@@ -8,6 +8,7 @@ class UserSignUpEntity {
   String? imageUrl;
   String? phoneNumber;
 
+
   UserSignUpEntity({
     required this.uUid,
     required this.firstName,

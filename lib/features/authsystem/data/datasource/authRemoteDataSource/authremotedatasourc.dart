@@ -15,7 +15,6 @@ class AuthRemoteInterfaceCallImpl implements AuthremoteInterfaceCall {
   @override
   Future<SuccessType?> signUpDataSource(UserSignUpEntity params) async {
     UserCredential? userCredential;
-
     try {
        debugPrint("params data here  data source ${params!.firstName},${params!.lastName},${params!.country},${params!.imageUrl},${params!.password},${params!.userEmail},${params!.phoneNumber}");
        userCredential = await _firebaseAuth.createUserWithEmailAndPassword(

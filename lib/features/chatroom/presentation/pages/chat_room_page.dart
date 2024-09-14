@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:talkathon/core/theme/app_pallet.dart';
@@ -13,6 +12,8 @@ class UserChatRoom extends StatefulWidget {
   final String currentUserId;
   final String userName;
   final String userProfileImage;
+  final bool isOnline;
+  final String lastSeen;
 
   const UserChatRoom({
     super.key,
@@ -20,6 +21,8 @@ class UserChatRoom extends StatefulWidget {
     required this.currentUserId,
     required this.userName,
     required this.userProfileImage,
+    required this.isOnline,
+    required this.lastSeen,
   });
 
   @override
@@ -76,6 +79,7 @@ class _UserChatRoomState extends State<UserChatRoom> {
         ),
         backgroundColor: const Color(0xFFF8F8F8),
         title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipOval(
               child: Image.network(
@@ -89,9 +93,14 @@ class _UserChatRoomState extends State<UserChatRoom> {
               ),
             ),
             const SizedBox(width: 10),
-            Text(widget.userName),
+             Column(
+              children: [
+                 Text(widget.userName,style: const TextStyle(height: 0.2),),
+                  Text(widget.isOnline?"online":widget.lastSeen,style:  TextStyle(height: 1.5,fontSize: 15,color: AppColors.greenColor),),
+              ],
+             ).paddingOnly(top: 10),
           ],
-        ),
+        )
       ),
       backgroundColor: const Color(0xFFF8F8F8),
       body: Column(

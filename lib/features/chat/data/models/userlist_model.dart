@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:talkathon/features/chat/domain/entity/userlisting_entity.dart';
 
 class UserModel {
@@ -9,6 +10,8 @@ class UserModel {
   final String password;
   final String phoneNumber;
   final String userEmail;
+  final bool isOnline;
+  final DateTime? lastOnline;
 
   UserModel({
     required this.uUid,
@@ -19,6 +22,8 @@ class UserModel {
     required this.password,
     required this.phoneNumber,
     required this.userEmail,
+    this.isOnline=false,
+    this.lastOnline,
   });
 
   factory UserModel.fromSnapshot(Map<dynamic, dynamic> value) {
@@ -31,6 +36,8 @@ class UserModel {
       password: value['password'] as String,
       phoneNumber: value['phoneNumber'] as String,
       userEmail: value['userEmail'] as String,
+      isOnline: value['isOnline'] as bool? ?? false,
+     lastOnline: (value['lastOnline'] as Timestamp?)?.toDate(), 
     );
   }
 
@@ -44,6 +51,8 @@ class UserModel {
       password: password,
       phoneNumber: phoneNumber,
       userEmail: userEmail,
+      isOnline: isOnline,
+      lastOnline: lastOnline?.toIso8601String() ?? "",
     );
   }
 }

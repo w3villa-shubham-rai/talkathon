@@ -33,10 +33,14 @@ import 'package:talkathon/features/message_for_group/data/repository/GroupMessag
 import 'package:talkathon/features/message_for_group/domain/usecase/get_messages_usecase.dart';
 import 'package:talkathon/features/message_for_group/domain/usecase/sendmessageusecase.dart';
 import 'package:talkathon/features/message_for_group/presentation/bloc/group_chat_room_bloc.dart';
+import 'package:talkathon/utils/status_off_online.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  final userStatusManager = UserStatusManager();
+  WidgetsBinding.instance.addObserver(userStatusManager);
   runApp(const MyApp());
 }
 
@@ -48,15 +52,18 @@ class MyApp extends StatelessWidget  with WidgetsBindingObserver {
 //   check if the app is in the resumed state (indicating the app is in the foreground)
 //   or paused state (indicating the app is in the background) and update the user status accordingly.
 
+// @override
+// void didChangeAppLifecycleState(AppLifecycleState state) {
+//     super.didChangeAppLifecycleState(state);
+//     if(state== AppLifecycleState.resumed)
+//     {
+       
+//     }
+//     else if(state==AppLifecycleState.paused){
 
-@override
-void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if(state== AppLifecycleState.resumed)
-    {
+//     }
 
-    }
-  }
+//   }
 
   @override
   Widget build(BuildContext context) {
