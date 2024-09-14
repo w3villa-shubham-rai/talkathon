@@ -1,7 +1,5 @@
-// lib/features/groupmessage/presentation/pages/group_chat_room.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:talkathon/core/theme/app_pallet.dart';
@@ -142,8 +140,8 @@ Widget build(BuildContext context) {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(6),
                                         color: isCurrentUser
-                                            ? Color(0xFFE8EEFC)
-                                            : Color(0xFFEDEDED),
+                                            ? const Color(0xFFE8EEFC)
+                                            : const Color(0xFFEDEDED),
                                       ),
                                       child: Text(
                                         message.text ?? '',
@@ -154,7 +152,7 @@ Widget build(BuildContext context) {
                                     ),
                                      Text(
                                      timeString,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Color(0xFF646464), fontSize: 9),
                                     ).paddingSymmetric(horizontal: 10, vertical: 3),
                                   ],

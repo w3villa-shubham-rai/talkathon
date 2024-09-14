@@ -49,7 +49,7 @@ class AuthSignupBloc extends Bloc<AuthEvent,AuthSignUpStateBloc> {
       final selectedImagePath = await ImageSelector.selectImage();
       debugPrint("selectedImagePath in bloc $selectedImagePath");
       if (selectedImagePath != null) {
-        emit(AuthSignUpSucessState(imagePath: selectedImagePath));
+        emit(ImageSelectionSuccessState(imagePath: selectedImagePath));
       }
     }
     catch(error)
@@ -65,7 +65,9 @@ class AuthSignupBloc extends Bloc<AuthEvent,AuthSignUpStateBloc> {
         userEmail: event.email,
         userPassword: event.password,
       ));
+       debugPrint("result of login hereerr33 ${result!.data}");
       if (result != null && result.isSuccess) {
+        debugPrint("result of login here $result");
           emit(AuthSignUpSucessState(data: result.toString()));
       } else {
         emit(AuthSignupErrorState(errorMessage: result?.message ?? "Signin failed"));

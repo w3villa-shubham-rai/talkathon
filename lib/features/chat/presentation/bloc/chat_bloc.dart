@@ -31,7 +31,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         final List<UserModel> users = result.data as List<UserModel>;
         final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-        allUsers = users.where((user) => user.uUid != currentUserId).toList();
+        allUsers = users.where((user) => user.uUid != currentUserId ||  user.uUid == currentUserId ).toList();
         emit(ChatSuccessState(users: allUsers, groups: allGroups));
       } else {
         emit(ChatErrorState(errorMessage: result?.message ?? 'Unknown error'));

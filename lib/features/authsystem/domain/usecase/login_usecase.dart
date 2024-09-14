@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:talkathon/core/usecase/usecase.dart';
 import 'package:talkathon/features/authsystem/domain/entity/usersignin.dart';
 import 'package:talkathon/features/authsystem/domain/repository/user_signiIn_BaseClass_Repo.dart';
@@ -9,6 +10,7 @@ class UserSignInUseCase extends UseCase<SuccessType, UserSignInEntity> {
 
   @override
   Future<SuccessType?> call({UserSignInEntity? params}) async {
+    debugPrint("call use case");
     if (params == null) {
       return SuccessType(isSuccess: false, message: "Parameters cannot be null",);
     }
@@ -16,9 +18,10 @@ class UserSignInUseCase extends UseCase<SuccessType, UserSignInEntity> {
       final result = await _userSignInBaseRepo.signIn(params);
       return result;
     } catch (e) {
+      debugPrint("error here UserSignInUseCase $e");
       return Future.value(SuccessType(
         isSuccess: false,
-        message: "An error occurred during sign up",
+        message: "An error occurred during sign In",
       ));
     }
   }

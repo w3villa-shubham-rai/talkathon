@@ -6,9 +6,15 @@ class AuthSignUpLoadingState extends AuthSignUpStateBloc {}
 
 class AuthSignUpSucessState extends AuthSignUpStateBloc {
   final String? data;
-  final String? imagePath;
-  AuthSignUpSucessState({this.data,this.imagePath});
+  AuthSignUpSucessState({this.data});
 }
+
+// Add a new state for image selection success
+class ImageSelectionSuccessState extends AuthSignUpStateBloc {
+  final String imagePath;
+  ImageSelectionSuccessState({required this.imagePath});
+}
+
 
 class AuthSignupErrorState extends AuthSignUpStateBloc {
   final String errorMessage;

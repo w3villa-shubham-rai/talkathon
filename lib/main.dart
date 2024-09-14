@@ -40,8 +40,23 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget  with WidgetsBindingObserver {
   const MyApp({super.key});
+
+
+//  In the didChangeAppLifecycleState method,
+//   check if the app is in the resumed state (indicating the app is in the foreground)
+//   or paused state (indicating the app is in the background) and update the user status accordingly.
+
+
+@override
+void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if(state== AppLifecycleState.resumed)
+    {
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

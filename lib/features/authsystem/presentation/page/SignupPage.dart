@@ -1,14 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talkathon/core/theme/app_pallet.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authbloc.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authevent.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authstate.dart';
+import 'package:talkathon/features/chat/presentation/page/chat_listing_page.dart';
 import 'package:talkathon/utils/component/customTextFormField.dart';
 import 'package:talkathon/utils/component/custom_snackbar.dart';
-import 'package:talkathon/utils/imagepicker.dart';
 import 'package:talkathon/utils/loaderframe.dart';
 import 'package:talkathon/utils/padding_marging.dart';
 
@@ -40,10 +39,12 @@ class _SignUpPageState extends State<SignUpPage> {
             showSnackBar(context, "Error in signUp page");
           } else if (state is AuthSignUpSucessState) {
             // listTextEditingController.clear();
-            // Navigator.pushAndRemoveUntil(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const Blogpage()),(Route<dynamic> route) => false,
-            // );
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatListingPage()),
+              (Route<dynamic> route) => false,
+            );
+
           }
         },
         builder: (context, state) {
@@ -75,7 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           clipBehavior: Clip.antiAlias,
                           child:
-                          state is AuthSignUpSucessState && state.imagePath != null
+                          state is ImageSelectionSuccessState && state.imagePath != null
                               ? Image.file(File(state.imagePath!), fit: BoxFit.cover)
                               : const SizedBox(),
                           // Image.network(
@@ -133,7 +134,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       onTap: () {
                         if (_globalKey.currentState!.validate()) {// All fields are valid, proceed with your action
                           String? imagePath;
-                          if (state is AuthSignUpSucessState) {
+                          if (state is ImageSelectionSuccessState) {
                             imagePath = state.imagePath;
                           }
                           context.read<AuthSignupBloc>().add(

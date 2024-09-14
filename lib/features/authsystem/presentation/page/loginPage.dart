@@ -5,17 +5,17 @@ import 'package:talkathon/features/authsystem/presentation/bloc/authbloc.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authevent.dart';
 import 'package:talkathon/features/authsystem/presentation/bloc/authstate.dart';
 import 'package:talkathon/features/authsystem/presentation/page/SignupPage.dart';
+import 'package:talkathon/features/chat/presentation/page/chat_listing_page.dart';
 import 'package:talkathon/utils/component/customTextFormField.dart';
 import 'package:talkathon/utils/component/custom_snackbar.dart';
 import 'package:talkathon/utils/component/extension_of_size.dart';
 import 'package:talkathon/utils/loaderframe.dart';
 import 'package:talkathon/utils/padding_marging.dart';
-
 import '../../../../core/theme/app_pallet.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
+  
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -32,11 +32,7 @@ class _LoginPageState extends State<LoginPage> {
             if (state is AuthSignupErrorState) {
               showSnackBar(context, "Error in signUp page");
             } else if (state is AuthSignUpSucessState) {
-              // listTextEditingController.clear();
-              // Navigator.pushAndRemoveUntil(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const Blogpage()),(Route<dynamic> route) => false,
-              // );
+             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const ChatListingPage(),), (route) => false);
             }
           },
           builder: (context, state) {
@@ -71,8 +67,8 @@ class _LoginPageState extends State<LoginPage> {
                 onTap: () {
                   context.read<AuthSignupBloc>().add(
                       AuthSignInEvent(
-                        password: _userPasswordController.text.toString(),
-                        email: _userEmailController.text.toString(),
+                        password: _userPasswordController.text.toString().trim(),
+                        email: _userEmailController.text.toString().trim(),
                       ),
                   );
                 },

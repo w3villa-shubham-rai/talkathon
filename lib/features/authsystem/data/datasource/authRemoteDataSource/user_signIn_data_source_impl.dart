@@ -14,10 +14,13 @@ class UserSignInDataSourceImpl implements LoginDataSourceBase{
      return SuccessType(isSuccess: true, message: "Signed in successfully");
    } on FirebaseAuthException catch(e)
     {
+     debugPrint("FirebaseAuthException: ${e.message}");
       return SuccessType(isSuccess: false, message: e.message);
     }
    catch(e)
     {
+
+      debugPrint("error in login +++++++++++++ error  $e ");
       return SuccessType(isSuccess: false, message: "An unexpected error occurred in Login");
     }
   }
